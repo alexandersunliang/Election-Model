@@ -3,6 +3,7 @@ title: "Davies et. al. 2016, Voter Estimation"
 bibliography: referencesvote.bib
 author: Alexander Sun
 date: 2024-03-19
+format: pdf
 ---
 
 ```{r}
@@ -37,8 +38,14 @@ print(vote_share_biden)
 
 ```
 
+<https://github.com/alexandersunliang/Election-Model.git>
+
 To predict whether individuals intended to vote for Joe Biden in the 2020 Presidential Election based on their party registration, education, and vote intentions, we used the logistic regression model. Logistic regression is particularly suited for binary outcome variables—in this case, a binary indicator of whether a respondent intended to vote for Biden (1) or not (0). We chose logistic regression over a Poisson or negative binomial regression due to the fundamental differences in the nature of the data and the objectives of our study. Poisson and negative binomial regressions are tailored for count data, which inherently represent the number of occurrences of an event within a fixed period or space. These models assume the outcome variable is a count, and in the case of negative binomial regression, it specifically addresses over-dispersion issues common in count data by allowing the variance to exceed the mean.
 
 The logistic regression model estimates the probability that each respondent votes for Biden as a function of their party registration. This probability is modeled using the logistic function, ensuring that the predicted values fall between 0 and 1, making them interpretable as probabilities. Following the method of Davies, we created a logistic regression model to estimate how each individual would vote and then found the total proportion that would vote for Biden. Our results show that 42.8% of voters in 2020 would vote for Biden, indicating that Trump is more likely to win the election based on our model.
 
 The data used was taken from the American National Election Studies webpage [@ANES]. The model was generated using dplyr [@dplyr] and R [@R].
+
+\newpage
+
+# References
