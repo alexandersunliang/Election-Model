@@ -1,0 +1,44 @@
+---
+title: "Davies et. al. 2016, Voter Estimation"
+bibliography: referencesvote.bib
+author: Alexander Sun
+date: 2024-03-19
+---
+
+```{r}
+#| echo: false
+#| warning: false
+library(dplyr)
+
+electiondata <- read.csv("anes_timeseries_2020_csv_20220210.csv")
+
+electiondata$education <- factor(electiondata$V201510, levels = c(1, 2, 3, 4, 5),
+                                  labels = c("Less than HS", "HS graduate", "Some college", "Bachelor's", "Post-grad"))
+
+electiondata$partyID <- factor(electiondata$V201019,
+                               levels = c(1, 2, 4),
+                               labels = c("Democratic", "Republican", "Independent"))
+electiondata <- subset(electiondata, V201019 %in% c(1, 2, 4)) 
+
+electiondata$voteIntention <- factor(electiondata$V201033,
+                                     levels = c(1, 2),
+                                     labels = c("Joe Biden", "Donald Trump"))
+electiondata <- subset(electiondata, V201033 %in% c(1, 2))
+
+electiondata$voteBiden <- ifelse(electiondata$voteIntention == "Joe Biden", 1, 0)
+
+model_full <- glm(voteBiden ~ partyID, data = electiondata, family = binomial())
+
+electiondata$predicted_probability = predict(model_full, type = "response")
+
+vote_share_biden = mean(electiondata$predicted_probability)
+
+print(vote_share_biden)
+
+```
+
+To predict whether individuals intended to vote for Joe Biden in the 2020 Presidential Election based on their party registration, education, and vote intentions, we used the logistic regression model. Logistic regression is particularly suited for binary outcome variables—in this case, a binary indicator of whether a respondent intended to vote for Biden (1) or not (0). We chose logistic regression over a Poisson or negative binomial regression due to the fundamental differences in the nature of the data and the objectives of our study. Poisson and negative binomial regressions are tailored for count data, which inherently represent the number of occurrences of an event within a fixed period or space. These models assume the outcome variable is a count, and in the case of negative binomial regression, it specifically addresses over-dispersion issues common in count data by allowing the variance to exceed the mean.
+
+The logistic regression model estimates the probability that each respondent votes for Biden as a function of their party registration. This probability is modeled using the logistic function, ensuring that the predicted values fall between 0 and 1, making them interpretable as probabilities. Following the method of Davies, we created a logistic regression model to estimate how each individual would vote and then found the total proportion that would vote for Biden. Our results show that 42.8% of voters in 2020 would vote for Biden, indicating that Trump is more likely to win the election based on our model.
+
+The data used was taken from the American National Election Studies webpage [@ANES]. The model was generated using dplyr [@dplyr] and R [@R].
